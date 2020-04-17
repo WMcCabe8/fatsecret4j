@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.android.volley.RequestQueue;
@@ -182,67 +183,91 @@ public class Request {
 					switch(method) {
 					
 					case Request.Method.GET_FOOD:
-						JSONObject foodJson = responseJson.getJSONObject("food");
-						Food food = FoodUtility.parseFoodFromJSONObject(foodJson);
-
-						responseListener.onFoodResponse(food);
-
+						try {
+							JSONObject foodJson = responseJson.getJSONObject("food");
+							Food food = FoodUtility.parseFoodFromJSONObject(foodJson);
+	
+							responseListener.onFoodResponse(food);
+						} catch (JSONException e) {
+							responseListener.onFoodResponse(null);
+						}
+						
 						break;
 
 					case Request.Method.SEARCH_FOODS:
-						JSONObject foods = responseJson.getJSONObject("foods");
-
-						int fMaxResults = foods.getInt("max_results");
-						int fTotalResults = foods.getInt("total_results");
-						int fPageNumber = foods.getInt("page_number");
-
-						List<CompactFood> cfRsults = new ArrayList<CompactFood>();
-
-						if(fTotalResults > fMaxResults * fPageNumber) {
-							JSONArray foodArray = foods.getJSONArray("food");
-							cfRsults = FoodUtility.parseCompactFoodListFromJSONArray(foodArray);
+						try {
+							JSONObject foods = responseJson.getJSONObject("foods");
+	
+							int fMaxResults = foods.getInt("max_results");
+							int fTotalResults = foods.getInt("total_results");
+							int fPageNumber = foods.getInt("page_number");
+	
+							List<CompactFood> cfRsults = new ArrayList<CompactFood>();
+	
+							if (fTotalResults == 1) {
+								JSONObject jsonFood = foods.getJSONObject("food");
+								cfRsults.add(FoodUtility.parseCompactFoodFromJSONObject(jsonFood));
+							}
+							else if(fTotalResults > 1 && (fTotalResults > fMaxResults * fPageNumber)) {
+								JSONArray foodArray = foods.getJSONArray("food");
+								cfRsults = FoodUtility.parseCompactFoodListFromJSONArray(foodArray);
+							}
+	
+							Response<CompactFood> foodsResponse = new Response<CompactFood>();
+							foodsResponse.setMaxResults(fMaxResults);
+							foodsResponse.setPageNumber(fPageNumber);
+							foodsResponse.setTotalResults(fTotalResults);
+							foodsResponse.setResults(cfRsults);
+	
+							responseListener.onFoodListRespone(foodsResponse);
+						} catch (JSONException e) {
+							responseListener.onFoodListRespone(null);
 						}
-
-						Response<CompactFood> foodsResponse = new Response<CompactFood>();
-						foodsResponse.setMaxResults(fMaxResults);
-						foodsResponse.setPageNumber(fPageNumber);
-						foodsResponse.setTotalResults(fTotalResults);
-						foodsResponse.setResults(cfRsults);
-
-						responseListener.onFoodListRespone(foodsResponse);
-
+						
 						break;
 
 					case Request.Method.GET_RECIPE:
-						JSONObject recipeJson = responseJson.getJSONObject("recipe");
-						Recipe recipe = RecipeUtility.parseRecipeFromJSONObject(recipeJson);
-
-						responseListener.onRecipeResponse(recipe);
-
+						try {
+							JSONObject recipeJson = responseJson.getJSONObject("recipe");
+							Recipe recipe = RecipeUtility.parseRecipeFromJSONObject(recipeJson);
+	
+							responseListener.onRecipeResponse(recipe);
+						} catch (JSONException e) {
+							responseListener.onRecipeResponse(null);
+						}
+						
 						break;
 
 					case Request.Method.SEARCH_RECIPES:
-						JSONObject recipes = responseJson.getJSONObject("recipes");
-
-						int rMaxResults = recipes.getInt("max_results");
-						int rTotalResults = recipes.getInt("total_results");
-						int rPageNumber = recipes.getInt("page_number");
-
-						List<CompactRecipe> crResults = new ArrayList<CompactRecipe>();
-
-						if(rTotalResults > rMaxResults * rPageNumber) {
-							JSONArray recipeArray = recipes.getJSONArray("recipe");
-							crResults = RecipeUtility.parseCompactRecipeListFromJSONArray(recipeArray);
+						try {
+							JSONObject recipes = responseJson.getJSONObject("recipes");
+	
+							int rMaxResults = recipes.getInt("max_results");
+							int rTotalResults = recipes.getInt("total_results");
+							int rPageNumber = recipes.getInt("page_number");
+	
+							List<CompactRecipe> crResults = new ArrayList<CompactRecipe>();
+	
+							if (rTotalResults == 1) {
+								JSONObject jsonRecipe = recipes.getJSONObject("recipe");
+								crResults.add(RecipeUtility.parseCompactRecipeFromJSONObject(jsonRecipe));
+							}
+							else if(rTotalResults > 1 && (rTotalResults > rMaxResults * rPageNumber)) {
+								JSONArray recipeArray = recipes.getJSONArray("recipe");
+								crResults = RecipeUtility.parseCompactRecipeListFromJSONArray(recipeArray);
+							}
+	
+							Response<CompactRecipe> recipesResponse = new Response<CompactRecipe>();
+							recipesResponse.setMaxResults(rMaxResults);
+							recipesResponse.setPageNumber(rPageNumber);
+							recipesResponse.setTotalResults(rTotalResults);
+							recipesResponse.setResults(crResults);
+	
+							responseListener.onRecipeListRespone(recipesResponse);
+						} catch (JSONException e) {
+							responseListener.onRecipeListRespone(null);
 						}
-
-						Response<CompactRecipe> recipesResponse = new Response<CompactRecipe>();
-						recipesResponse.setMaxResults(rMaxResults);
-						recipesResponse.setPageNumber(rPageNumber);
-						recipesResponse.setTotalResults(rTotalResults);
-						recipesResponse.setResults(crResults);
-
-						responseListener.onRecipeListRespone(recipesResponse);
-
+						
 						break;
 					}
 				}

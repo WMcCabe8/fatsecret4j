@@ -50,12 +50,20 @@ public class RecipeUtility {
 		Long id = Long.parseLong(json.getString("recipe_id"));
 		
 		List<String> images = new ArrayList<String>();
-		JSONObject recipeImages = json.getJSONObject("recipe_images");
-		JSONArray recipeImage = null;
+		JSONObject recipeImages = null;
 		try {
-			recipeImage = recipeImages.getJSONArray("recipe_image");
-		} catch(Exception e) {
-			recipeImage = null;
+			recipeImages = json.getJSONObject("recipe_images");
+		} catch (Exception e) {
+			recipeImages = null;
+		}
+		
+		JSONArray recipeImage = null;
+		if (recipeImages != null) {
+			try {
+				recipeImage = recipeImages.getJSONArray("recipe_image");
+			} catch(Exception e) {
+				recipeImage = null;
+			}
 		}
 		
 		if(recipeImage != null) {
@@ -63,12 +71,15 @@ public class RecipeUtility {
 				String image = recipeImage.getString(i);
 				images.add(image);
 			}
-		} else {
+		} else if (recipeImages != null) {
 			String image = recipeImages.getString("recipe_image");
 			images.add(image);
 		}
-				
-		Integer rating = Integer.parseInt(json.getString("rating"));
+		
+		Integer rating = null;
+		if (json.getString("rating").chars().allMatch(Character::isDigit)) {
+			rating = Integer.parseInt(json.getString("rating"));
+		}
 		
 		List<String> types = new ArrayList<String>();
 		JSONObject recipeTypes = json.getJSONObject("recipe_types");
