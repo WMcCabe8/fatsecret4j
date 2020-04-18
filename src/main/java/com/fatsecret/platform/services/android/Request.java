@@ -74,6 +74,7 @@ public class Request {
 		int GET_FOOD = 2;
 		int SEARCH_RECIPES = 3;
 		int GET_RECIPE = 4;
+		int FIND_FOOD_ID_FOR_BARCODE = 5;
 	}
 
 	/**
@@ -114,6 +115,21 @@ public class Request {
 		try {
 			String apiUrl = builder.buildFoodGetUrl(id);
 			getResponse(queue, apiUrl, Request.Method.GET_FOOD);
+		} catch (Exception e) {
+			System.out.println("Exception: " + e.getMessage());
+		}
+	}
+	/**
+	 * Returns food id matching provided barcode.
+	 *
+	 * @param queue			the request queue for android requests
+	 * @param barcode		The 13-digit GTIN-13 formated sequence of digits representing the barcode to search against
+	 */
+	public void findFoodIdForBarcode(RequestQueue queue, String barcode) {
+		
+		try {
+			String apiUrl = builder.buildFoodFindIdForBarcodeUrl(barcode);
+			getResponse(queue, apiUrl, Request.Method.FIND_FOOD_ID_FOR_BARCODE);
 		} catch (Exception e) {
 			System.out.println("Exception: " + e.getMessage());
 		}
@@ -191,6 +207,14 @@ public class Request {
 						} catch (JSONException e) {
 							responseListener.onFoodResponse(null);
 						}
+						
+						break;
+						
+					case Request.Method.FIND_FOOD_ID_FOR_BARCODE:
+						JSONObject foodIdJson = responseJson.getJSONObject("food_id");
+						Long foodId = FoodUtility.parseFoodIdFromJSONObject(foodIdJson);
+						
+						responseListener.onFoodIdResponse(foodId);
 						
 						break;
 

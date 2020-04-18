@@ -64,4 +64,13 @@ public interface ResponseListener {
 	default public void onRecipeListRespone(Response<CompactRecipe> response) {
 		System.out.println("ResponseListener onRecipeListRespone");
 	}
+
+	/** 
+	 * Called when a food id response is received.
+	 *
+	 * @param foodId			the food id from the response
+	 */
+	default public void onFoodIdResponse(Long foodId) {
+		System.out.println("ResponseListener onFoodIdResponse");
+	}
 }

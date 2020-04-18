@@ -79,6 +79,24 @@ public class Request {
 		
 		return null;
 	}
+	
+	/**
+	 * Returns the json object containing the food id of the matching barcode.
+	 *
+	 * @param barcode		The 13-digit GTIN-13 formated sequence of digits representing the barcode to search against
+	 * @return				food id matching barcode
+	 */
+	public JSONObject findFoodIdForBarcode(String barcode) {
+		
+		try {
+			String apiUrl = builder.buildFoodFindIdForBarcodeUrl(barcode);
+			return getJSONResponse(apiUrl);
+		} catch (Exception e) {
+			System.out.println("Exception: " + e.getMessage());
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Returns the json object associated with the recipes depending on the search query

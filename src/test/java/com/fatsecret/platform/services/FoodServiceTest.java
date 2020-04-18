@@ -2,18 +2,18 @@ package com.fatsecret.platform.services;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fatsecret.platform.model.Food;
 
 public class FoodServiceTest {
-	private FatsecretService service;
+	private static FatsecretService service;
 	
-	@Before
-	public void setUp() {
-        String key = "your key";
-        String secret = "your secret";
+	@BeforeClass
+	public static void setUp() {
+        String key = "bc80093471774b80bcbf3eb470b1305d";
+        String secret = "349652f210f74c6cad487f72e3dcebc0";
 
         service = new FatsecretService(key, secret);
 	}
@@ -24,6 +24,11 @@ public class FoodServiceTest {
 		assertEquals("Penne", food.getName());
 		assertEquals(4, food.getServings().size());
 		assertEquals("Generic", food.getType());
+	}
+	@Test
+	public void testFindFoodIdForBarcode() {
+		Long foodId = service.findFoodIdForBarcode("077885882007");
+		assertEquals(752679L,foodId.longValue());
 	}
 
 	@Test

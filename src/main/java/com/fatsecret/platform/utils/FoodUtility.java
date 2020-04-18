@@ -130,4 +130,14 @@ public class FoodUtility {
 		
 		return foods;
 	}
+
+	/**
+	 * Returns food id
+	 * 
+	 * @param foodIdJson	json object representing the food id
+	 * @return				food id
+	 */
+	public static Long parseFoodIdFromJSONObject(JSONObject foodIdJson) {
+		return Long.parseLong(foodIdJson.getString("value"));
+	}
 }

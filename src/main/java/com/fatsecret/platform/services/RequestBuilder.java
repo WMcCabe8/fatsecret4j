@@ -225,6 +225,23 @@ public class RequestBuilder {
 
 		return APP_URL + "?" + paramify(params.toArray(template));
 	}
+	
+	/**
+	 * Returns the rest url which will be sent to fatsecret platform server for searching a food_id matching the barcode specified.
+	 *
+	 * @param barcode		The 13-digit GTIN-13 formated sequence of digits representing the barcode to search against
+	 * @return				rest url which will be sent to fatsecret platform server for searching a food_id matching the barcode specified
+	 * @throws Exception	if sign throws exception
+	 */
+	public String buildFoodFindIdForBarcodeUrl(String barcode) throws Exception {
+		List<String> params = new ArrayList<String>(Arrays.asList(generateOauthParams()));
+		String[] template = new String[1];
+		params.add("method=food.find_id_for_barcode");
+		params.add("barcode=" + barcode);
+		params.add("oauth_signature=" + sign(HTTP_METHOD, APP_URL, params.toArray(template)));
+
+		return APP_URL + "?" + paramify(params.toArray(template));
+	}
 
 	/**
 	 * Returns the rest url which will be sent to fatsecret platform server for searching recipes

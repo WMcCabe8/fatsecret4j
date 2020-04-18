@@ -12,8 +12,8 @@ import com.fatsecret.platform.model.Recipe;
 public class Test {
 
 	public static void main(String[] args) {
-        String key = "your key";
-        String secret = "your secret";
+        String key = "bc80093471774b80bcbf3eb470b1305d";
+        String secret = "349652f210f74c6cad487f72e3dcebc0";
 		
         FatsecretService service = new FatsecretService(key, secret);
         service.getRecipe(315L);
@@ -53,6 +53,10 @@ public class Test {
 		Food food = service.getFood(60810L);
 		System.out.println("==>> Food");
 		System.out.println("Food: " + food.getName());
+		
+		Long foodId = service.findFoodIdForBarcode("077885882007");
+		System.out.println("==>> Food ID");
+		System.out.println("Food ID: " + foodId);
 		
 		Response<CompactFood> res = service.searchFoods("biryani", 1);
 		System.out.println("==>> Response");

@@ -71,6 +71,27 @@ public class FatsecretService {
 	}
 	
 	/**
+	 * Returns the food id for the specified barcode
+	 *
+	 * @param barcode		the barcode used find the food id
+	 * @return				food id based on the barcode
+	 */
+	public Long findFoodIdForBarcode(String barcode) {
+		JSONObject response = request.findFoodIdForBarcode(barcode);
+		
+		try {
+			if(response != null) {
+				JSONObject foodId = response.getJSONObject("food_id");
+				return FoodUtility.parseFoodIdFromJSONObject(foodId);
+			}
+		} catch (Exception e) {
+			System.out.println("Exception: " + e.getMessage());
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Returns response associated with the food items at zeroth page depending on the search query
 	 * 
 	 * @param query			search terms for querying food items
