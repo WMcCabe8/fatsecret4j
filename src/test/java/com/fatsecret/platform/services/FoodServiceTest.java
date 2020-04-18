@@ -12,8 +12,8 @@ public class FoodServiceTest {
 	
 	@BeforeClass
 	public static void setUp() {
-        String key = "bc80093471774b80bcbf3eb470b1305d";
-        String secret = "349652f210f74c6cad487f72e3dcebc0";
+        String key = "";
+        String secret = "";
 
         service = new FatsecretService(key, secret);
 	}

@@ -12,8 +12,8 @@ import com.fatsecret.platform.model.Recipe;
 public class Test {
 
 	public static void main(String[] args) {
-        String key = "bc80093471774b80bcbf3eb470b1305d";
-        String secret = "349652f210f74c6cad487f72e3dcebc0";
+        String key = "";
+        String secret = "";
 		
         FatsecretService service = new FatsecretService(key, secret);
         service.getRecipe(315L);
