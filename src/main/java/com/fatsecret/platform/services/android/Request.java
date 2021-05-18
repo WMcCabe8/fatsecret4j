@@ -119,6 +119,23 @@ public class Request {
 			System.out.println("Exception: " + e.getMessage());
 		}
 	}
+	
+	/**
+	 * V2 - Returns food based on the identifier with nutritional information
+	 *
+	 * @param queue			the request queue for android requests
+	 * @param id			the unique food identifier
+	 */
+	public void getFoodV2(RequestQueue queue, Long id) {
+
+		try {
+			String apiUrl = builder.buildFoodV2GetUrl(id);
+			getResponse(queue, apiUrl, Request.Method.GET_FOOD);
+		} catch (Exception e) {
+			System.out.println("Exception: " + e.getMessage());
+		}
+	}
+	
 	/**
 	 * Returns food id matching provided barcode.
 	 *
