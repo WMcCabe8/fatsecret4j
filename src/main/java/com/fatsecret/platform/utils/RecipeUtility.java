@@ -77,9 +77,14 @@ public class RecipeUtility {
 		}
 		
 		Integer rating = null;
-		if (json.getString("rating").chars().allMatch(Character::isDigit)) {
-			rating = Integer.parseInt(json.getString("rating"));
+		try {
+			if (json.getString("rating").chars().allMatch(Character::isDigit)) {
+				rating = Integer.parseInt(json.getString("rating"));
+			}
+		} catch (Exception e) {
+			
 		}
+		
 		
 		List<String> types = new ArrayList<String>();
 		JSONObject recipeTypes = json.getJSONObject("recipe_types");
@@ -119,26 +124,37 @@ public class RecipeUtility {
 		}
 		
 		List<Category> categories = new ArrayList<Category>();
-		JSONObject recipeCategories = json.getJSONObject("recipe_categories");
-		JSONArray recipeCategory = null;
-
+		JSONObject recipeCategories = null;
 		try {
-			recipeCategory = recipeCategories.getJSONArray("recipe_category");
+			recipeCategories = json.getJSONObject("recipe_categories");
 		} catch(Exception e) {
-			recipeCategory = null;
+			recipeCategories = null;
 		}
-
-		if(recipeCategory != null) {
-			for(int i = 0; i < recipeCategory.length(); i++) {
-				JSONObject recipeCategoryObj = recipeCategory.getJSONObject(i);
+		
+		if (recipeCategories != null) {
+			
+			JSONArray recipeCategory = null;
+			
+			try {
+				recipeCategory = recipeCategories.getJSONArray("recipe_category");
+			} catch(Exception e) {
+				recipeCategory = null;
+			}
+	
+			if(recipeCategory != null) {
+				for(int i = 0; i < recipeCategory.length(); i++) {
+					JSONObject recipeCategoryObj = recipeCategory.getJSONObject(i);
+					Category category = parseJsonToCategory(recipeCategoryObj);
+					categories.add(category);
+				}
+			} else {
+				JSONObject recipeCategoryObj = recipeCategories.getJSONObject("recipe_category");
 				Category category = parseJsonToCategory(recipeCategoryObj);
 				categories.add(category);
 			}
-		} else {
-			JSONObject recipeCategoryObj = recipeCategories.getJSONObject("recipe_category");
-			Category category = parseJsonToCategory(recipeCategoryObj);
-			categories.add(category);
 		}
+
+		
 		
 		JSONObject servingSizes = json.getJSONObject("serving_sizes");
 		JSONObject servingObj = servingSizes.getJSONObject("serving");
@@ -225,6 +241,37 @@ public class RecipeUtility {
 			String image = json.getString("recipe_image");
 			images.add(image);
 		} catch(Exception ignore) {}
+
+//		JSONObject recipeNutritionObj = json.getJSONObject("serving");
+//		
+//		BigDecimal calories = null;
+//		try {
+//			String caloriesString = recipeNutritionObj.getString("calories");
+//			calories = new BigDecimal(caloriesString);
+//
+//		} catch(Exception ignore) {}
+//		
+//		
+//		BigDecimal carbohydrate = null;
+//		try {
+//			String carbohydrateString = recipeNutritionObj.getString("carbohydrate");
+//			carbohydrate = new BigDecimal(carbohydrateString);
+//
+//		} catch(Exception ignore) {}
+//		
+//		BigDecimal protein = null;
+//		try {
+//			String proteinString = recipeNutritionObj.getString("protein");
+//			protein = new BigDecimal(proteinString);
+//
+//		} catch(Exception ignore) {}
+//		
+//		BigDecimal fat = null;
+//		try {
+//			String fatString = recipeNutritionObj.getString("fat");
+//			fat = new BigDecimal(fatString);
+//
+//		} catch(Exception ignore) {}
 		
 		CompactRecipe recipe = new CompactRecipe();
 		
@@ -233,6 +280,10 @@ public class RecipeUtility {
 		recipe.setDescription(description);
 		recipe.setId(id);
 		recipe.setImages(images);
+//		recipe.setCalories(calories);
+//		recipe.setCarbohydrate(carbohydrate);
+//		recipe.setProtein(protein);
+//		recipe.setFat(fat);
 		
 		return recipe;
 		
